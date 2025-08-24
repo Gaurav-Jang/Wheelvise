@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Search, Car } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, Car, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,6 @@ interface Vehicle {
   Car_ID: number;
   Brand: string;
   Model: string;
-  // Year: number;
   Fuel_Type: string;
   Transmission: string;
   Price: number;
@@ -23,9 +22,24 @@ interface Vehicle {
   image?: string;
 }
 
+// Manual mapping of brand names to logos
+const brandLogos: Record<string, string> = {
+  "Kia": "/Brandslogo/kia.avif",
+  "Hyundai": "/Brandslogo/Hyundai.jpeg",
+  "Maruti Suzuki": "/Brandslogo/Susuki.jpeg",  
+  "Toyota": "/Brandslogo/Toyota.jpeg",
+  "Honda": "/Brandslogo/Honda.jpeg",
+  "Mahindra": "/Brandslogo/mahindra.jpeg",
+  "Tata Motors": "/Brandslogo/tata.png",      
+  "Volkswagen": "/Brandslogo/VW.jpeg",
+  "Renault": "/Brandslogo/Renault.jpeg",
+  "Skoda": "/Brandslogo/skoda.jpeg",
+  default: "/Brandslogo/default.jpeg",
+};
+
+
 const Recommendations = () => {
   const [budget, setBudget] = useState<number[]>([500000, 5000000]);
-  // const [yearRange, setYearRange] = useState<number[]>([2015, 2025]);
   const [fuelType, setFuelType] = useState("all");
   const [transmission, setTransmission] = useState("all");
   const [seating, setSeating] = useState("all"); 
@@ -34,8 +48,8 @@ const Recommendations = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [expandedBrand, setExpandedBrand] = useState<string | null>(null);
 
-  // Fetch vehicles
   useEffect(() => {
     setIsLoading(true);
     fetch("/car_dataset_india.json")
@@ -45,16 +59,13 @@ const Recommendations = () => {
       .finally(() => setIsLoading(false));
   }, []);
 
-  // Apply filters
   const applyFilters = () => {
-    setIsLoading(true); // start loader
-    setTimeout(() => {  // simulate processing time
+    setIsLoading(true);
+    setTimeout(() => {
       let filtered = vehicles.filter(
         v =>
           v.Price >= budget[0] &&
-          v.Price <= budget[1] 
-          // v.Year >= yearRange[0] &&
-          // v.Year <= yearRange[1]
+          v.Price <= budget[1]
       );
 
       if (fuelType !== "all") filtered = filtered.filter(v => v.Fuel_Type.toLowerCase() === fuelType.toLowerCase());
@@ -63,9 +74,15 @@ const Recommendations = () => {
       if (maxServiceCost !== null) filtered = filtered.filter(v => v.Service_Cost <= maxServiceCost);
 
       setFilteredVehicles(filtered);
-      setIsLoading(false); // stop loader
-    }, 500); // small delay for smooth loader effect
+      setIsLoading(false);
+    }, 500);
   };
+
+  const groupedVehicles = filteredVehicles.reduce((acc: Record<string, Vehicle[]>, vehicle) => {
+    if (!acc[vehicle.Brand]) acc[vehicle.Brand] = [];
+    acc[vehicle.Brand].push(vehicle);
+    return acc;
+  }, {});
 
   return (
     <div className="min-h-screen bg-background">
@@ -95,12 +112,6 @@ const Recommendations = () => {
                   <span className="text-sm text-muted-foreground">₹{budget[0].toLocaleString()} - ₹{budget[1].toLocaleString()}</span>
                   <Slider min={50000} max={5000000} step={5000} value={budget} onValueChange={setBudget} className="w-full" />
                 </div>
-                {/* Year Range */}
-                {/* <div className="flex flex-col space-y-1">
-                  <Label className="font-medium">Year</Label>
-                  <span className="text-sm text-muted-foreground">{yearRange[0]} - {yearRange[1]}</span>
-                  <Slider min={2000} max={2025} step={1} value={yearRange} onValueChange={setYearRange} className="w-full" />
-                </div> */}
                 {/* Fuel Type */}
                 <div className="flex flex-col space-y-1">
                   <Label className="font-medium">Fuel Type</Label>
@@ -171,56 +182,93 @@ const Recommendations = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {isLoading ? (
-              // Loader Skeleton
-              Array.from({ length: 3 }).map((_, i) => (
+          {/* Accordion Section */}
+          {isLoading ? (
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
                 <Card key={i} className="animate-pulse h-64 bg-muted" />
-              ))
-            ) : filteredVehicles.length === 0 ? (
-              <Card className="text-center py-12 col-span-full">
-                <CardContent>
-                  <Car className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-foreground mb-2">No vehicles found</h3>
-                  <p className="text-muted-foreground">Try adjusting your requirements to see results</p>
-                </CardContent>
-              </Card>
-            ) : (
-              filteredVehicles.map(v => (
-                <Card key={v.Car_ID} className="overflow-hidden hover:shadow-xl transition-all duration-300">
-                  {/* <div className="relative">
-                    {v.image ? <img src={v.image} alt={`${v.Brand} ${v.Model}`} className="w-full h-48 object-cover" /> :
-                    <div className="w-full h-48 bg-muted flex items-center justify-center text-muted-foreground">No Image</div>}
-                    <Badge className="absolute top-2 right-2 bg-primary">{v.Fuel_Type}</Badge>
-                  </div> */}
-                  <div className="relative w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex flex-col items-center justify-center text-center rounded-lg shadow-sm">
-  {v.image ? (
-    <img
-      src={v.image}
-      alt={`${v.Brand} ${v.Model}`}
-      className="w-full h-48 object-cover rounded-lg"
-    />
-  ) : (
-    <div className="flex flex-col items-center justify-center h-full w-full px-2">
-      <span className="text-2xl font-bold text-gray-700">{v.Brand}</span>
-      <span className="text-md text-gray-600 mt-1">{v.Model}</span>
-    </div>
-  )}
-  <Badge className="absolute top-2 right-2 bg-primary">{v.Fuel_Type}</Badge>
-</div>
+              ))}
+            </div>
+          ) : filteredVehicles.length === 0 ? (
+            <Card className="text-center py-12">
+              <CardContent>
+                <Car className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">No vehicles found</h3>
+                <p className="text-muted-foreground">Try adjusting your requirements to see results</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {Object.entries(groupedVehicles).map(([brand, vehicles]) => (
+                <Card
+                  key={brand}
+                  className="border border-gray-200 rounded-lg shadow hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div
+                    className="flex justify-between items-center cursor-pointer px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-t-lg"
+                    onClick={() => setExpandedBrand(expandedBrand === brand ? null : brand)}
+                  >
+                    <div className="flex items-center space-x-3">
+                      {/* Brand Logo manually mapped */}
+                      <img
+                        src={brandLogos[brand] || brandLogos.default}
+                        alt={brand}
+                        className="w-8 h-8 object-contain rounded-md border border-gray-300"
+                      />
+                      <span className="font-semibold text-lg">{brand} ({vehicles.length})</span>
+                    </div>
 
-                  <CardContent className="p-4 text-sm space-y-2">
-                    <h3 className="font-semibold">{v.Brand} {v.Model}</h3>
-                    <div className="flex justify-between"><span>Price:</span> <span>₹{v.Price.toLocaleString()}</span></div>
-                    <div className="flex justify-between"><span>Mileage:</span> <span>{v.Mileage} km/l</span></div>
-                    <div className="flex justify-between"><span>Transmission:</span> <span>{v.Transmission}</span></div>
-                    <div className="flex justify-between"><span>Seating:</span> <span>{v.Seating_Capacity}</span></div>
-                    <div className="flex justify-between"><span>Service Cost:</span> <span>₹{v.Service_Cost.toLocaleString()}</span></div>
-                  </CardContent>
+                    <motion.div
+                      animate={{ rotate: expandedBrand === brand ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <ChevronDown className="w-5 h-5 text-gray-600" />
+                    </motion.div>
+                  </div>
+
+                  <AnimatePresence>
+                    {expandedBrand === brand && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="px-4 py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                      >
+                        {vehicles.map(v => (
+                          <Card key={v.Car_ID} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                            <div className="relative w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex flex-col items-center justify-center text-center rounded-lg shadow-sm">
+                              {v.image ? (
+                                <img
+                                  src={v.image}
+                                  alt={`${v.Brand} ${v.Model}`}
+                                  className="w-full h-48 object-cover rounded-lg"
+                                />
+                              ) : (
+                                <div className="flex flex-col items-center justify-center h-full w-full px-2">
+                                  <span className="text-2xl font-bold text-gray-700">{v.Brand}</span>
+                                  <span className="text-md text-gray-600 mt-1">{v.Model}</span>
+                                </div>
+                              )}
+                              <Badge className="absolute top-2 right-2 bg-primary">{v.Fuel_Type}</Badge>
+                            </div>
+                            <CardContent className="p-4 text-sm space-y-2">
+                              <h3 className="font-semibold">{v.Brand} {v.Model}</h3>
+                              <div className="flex justify-between"><span>Price:</span> <span>₹{v.Price.toLocaleString()}</span></div>
+                              <div className="flex justify-between"><span>Mileage:</span> <span>{v.Mileage} km/l</span></div>
+                              <div className="flex justify-between"><span>Transmission:</span> <span>{v.Transmission}</span></div>
+                              <div className="flex justify-between"><span>Seating:</span> <span>{v.Seating_Capacity}</span></div>
+                              <div className="flex justify-between"><span>Service Cost:</span> <span>₹{v.Service_Cost.toLocaleString()}</span></div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </Card>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
 
         </motion.div>
       </div>
