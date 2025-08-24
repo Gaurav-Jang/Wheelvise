@@ -11,22 +11,26 @@ const Home = () => {
     {
       icon: Car,
       title: "Smart Recommendations",
-      description: "Get personalized vehicle suggestions based on your budget, needs, and lifestyle.",
+      description:
+        "Get personalized vehicle suggestions based on your budget, needs, and lifestyle.",
     },
     {
       icon: Shield,
       title: "Trusted Reviews",
-      description: "Access comprehensive reviews and maintenance insights for informed decisions.",
+      description:
+        "Access comprehensive reviews and maintenance insights for informed decisions.",
     },
     {
       icon: Zap,
       title: "Quick & Easy",
-      description: "Find your perfect match in minutes with our intuitive recommendation engine.",
+      description:
+        "Find your perfect match in minutes with our intuitive recommendation engine.",
     },
     {
       icon: Users,
       title: "Expert Guidance",
-      description: "Benefit from expert automotive knowledge and community insights.",
+      description:
+        "Benefit from expert automotive knowledge and community insights.",
     },
   ];
 
@@ -42,7 +46,7 @@ const Home = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-automotive-dark/80 to-automotive-dark/40" />
         </div>
-        
+
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -51,12 +55,14 @@ const Home = () => {
           >
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
               Find the Best Vehicle that{" "}
-              <span className="text-automotive-blue-light">Fits Your Budget</span>{" "}
+              <span className="text-automotive-blue-light">
+                Fits Your Budget
+              </span>{" "}
               & Lifestyle
             </h1>
             <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto">
-              Make smart vehicle decisions with our AI-powered recommendation engine. 
-              Cars, bikes, SUVs - we help you choose wisely.
+              Make smart vehicle decisions with our AI-powered recommendation
+              engine. Cars, bikes, SUVs - we help you choose wisely.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild className="text-lg px-8 py-4">
@@ -65,21 +71,28 @@ const Home = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" asChild className="text-lg px-8 py-4 bg-white/10 border-white/20 text-white hover:bg-white/20">
-                <Link to="/blogs">
-                  Read Our Blogs
-                </Link>
+              <Button
+                variant="outline"
+                size="lg"
+                asChild
+                className="text-lg px-8 py-4 bg-white/10 border-white/20 text-white hover:bg-white/20"
+              >
+                <Link to="/blogs">Read Our Blogs</Link>
               </Button>
             </div>
 
             {/* Instagram Icon */}
-            <div className="flex items-center justify-center mt-6 space-x-2">
-  <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer">
-    <Instagram className="h-6 w-6 text-pink-500 hover:text-pink-400" />
-  </a>
-  <span className="text-white font-medium">@revwithgaurav</span>
-</div>
-
+            <div className="flex items-center justify-center mt-6">
+              <a
+                href={SOCIAL_LINKS.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 text-white font-medium hover:text-pink-400"
+              >
+                <Instagram className="h-6 w-6 text-pink-500" />
+                <span>@revwithgaurav</span>
+              </a>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -98,8 +111,8 @@ const Home = () => {
               Why Choose Wheelvise?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              We combine cutting-edge technology with automotive expertise to help you 
-              make the best vehicle decision for your needs.
+              We combine cutting-edge technology with automotive expertise to
+              help you make the best vehicle decision for your needs.
             </p>
           </motion.div>
 
@@ -144,9 +157,15 @@ const Home = () => {
               Ready to Find Your Perfect Vehicle?
             </h2>
             <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
-              Join thousands of smart buyers who have found their ideal vehicle with Wheelvise.
+              Join thousands of smart buyers who have found their ideal vehicle
+              with Wheelvise.
             </p>
-            <Button size="lg" variant="secondary" asChild className="text-lg px-8 py-4">
+            <Button
+              size="lg"
+              variant="secondary"
+              asChild
+              className="text-lg px-8 py-4"
+            >
               <Link to="/recommendations">
                 Start Your Search
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -155,8 +174,6 @@ const Home = () => {
           </motion.div>
         </div>
       </section>
-
-      
     </div>
   );
 };
