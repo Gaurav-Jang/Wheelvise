@@ -4,7 +4,13 @@ import { Search, Car, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 
@@ -24,25 +30,28 @@ interface Vehicle {
 
 // Manual mapping of brand names to logos
 const brandLogos: Record<string, string> = {
-  "Kia": "/Brandslogo/kia.avif",
-  "Hyundai": "/Brandslogo/Hyundai.jpeg",
-  "Maruti Suzuki": "/Brandslogo/Susuki.jpeg",  
-  "Toyota": "/Brandslogo/Toyota.jpeg",
-  "Honda": "/Brandslogo/Honda.jpeg",
-  "Mahindra": "/Brandslogo/mahindra.jpeg",
-  "Tata Motors": "/Brandslogo/tata.png",      
-  "Volkswagen": "/Brandslogo/VW.jpeg",
-  "Renault": "/Brandslogo/Renault.jpeg",
-  "Skoda": "/Brandslogo/skoda.jpeg",
+  Kia: "/Brandslogo/kia.avif",
+  Hyundai: "/Brandslogo/Hyundai.jpeg",
+  "Maruti Suzuki": "/Brandslogo/Susuki.jpeg",
+  Toyota: "/Brandslogo/Toyota.jpeg",
+  Honda: "/Brandslogo/Honda.jpeg",
+  Mahindra: "/Brandslogo/mahindra.jpeg",
+  "Tata Motors": "/Brandslogo/tata.png",
+  Volkswagen: "/Brandslogo/VW.jpeg",
+  Renault: "/Brandslogo/Renault.jpeg",
+  Skoda: "/Brandslogo/skoda.jpeg",
   default: "/Brandslogo/default.jpeg",
 };
-
+const formatCurrency = (value: number) => {
+  if (value >= 100000) return `${value / 100000} Lakh`;
+  return value.toLocaleString();
+};
 
 const Recommendations = () => {
   const [budget, setBudget] = useState<number[]>([500000, 5000000]);
   const [fuelType, setFuelType] = useState("all");
   const [transmission, setTransmission] = useState("all");
-  const [seating, setSeating] = useState("all"); 
+  const [seating, setSeating] = useState("all");
   const [maxServiceCost, setMaxServiceCost] = useState<number>(50000);
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -53,7 +62,7 @@ const Recommendations = () => {
   useEffect(() => {
     setIsLoading(true);
     fetch("/car_dataset_india.json")
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((data: Vehicle[]) => setVehicles(data))
       .catch(console.error)
       .finally(() => setIsLoading(false));
@@ -63,32 +72,46 @@ const Recommendations = () => {
     setIsLoading(true);
     setTimeout(() => {
       let filtered = vehicles.filter(
-        v =>
-          v.Price >= budget[0] &&
-          v.Price <= budget[1]
+        (v) => v.Price >= budget[0] && v.Price <= budget[1]
       );
 
-      if (fuelType !== "all") filtered = filtered.filter(v => v.Fuel_Type.toLowerCase() === fuelType.toLowerCase());
-      if (transmission !== "all") filtered = filtered.filter(v => v.Transmission.toLowerCase() === transmission.toLowerCase());
-      if (seating !== "all") filtered = filtered.filter(v => v.Seating_Capacity === Number(seating));
-      if (maxServiceCost !== null) filtered = filtered.filter(v => v.Service_Cost <= maxServiceCost);
+      if (fuelType !== "all")
+        filtered = filtered.filter(
+          (v) => v.Fuel_Type.toLowerCase() === fuelType.toLowerCase()
+        );
+      if (transmission !== "all")
+        filtered = filtered.filter(
+          (v) => v.Transmission.toLowerCase() === transmission.toLowerCase()
+        );
+      if (seating !== "all")
+        filtered = filtered.filter(
+          (v) => v.Seating_Capacity === Number(seating)
+        );
+      if (maxServiceCost !== null)
+        filtered = filtered.filter((v) => v.Service_Cost <= maxServiceCost);
 
       setFilteredVehicles(filtered);
       setIsLoading(false);
     }, 500);
   };
 
-  const groupedVehicles = filteredVehicles.reduce((acc: Record<string, Vehicle[]>, vehicle) => {
-    if (!acc[vehicle.Brand]) acc[vehicle.Brand] = [];
-    acc[vehicle.Brand].push(vehicle);
-    return acc;
-  }, {});
+  const groupedVehicles = filteredVehicles.reduce(
+    (acc: Record<string, Vehicle[]>, vehicle) => {
+      if (!acc[vehicle.Brand]) acc[vehicle.Brand] = [];
+      acc[vehicle.Brand].push(vehicle);
+      return acc;
+    },
+    {}
+  );
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -107,16 +130,60 @@ const Recommendations = () => {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Budget */}
-                <div className="flex flex-col space-y-1">
+
+                <div className="flex flex-col space-y-2">
                   <Label className="font-medium">Budget</Label>
-                  <span className="text-sm text-muted-foreground">₹{budget[0].toLocaleString()} - ₹{budget[1].toLocaleString()}</span>
-                  <Slider min={50000} max={5000000} step={5000} value={budget} onValueChange={setBudget} className="w-full" />
+                  <span className="text-sm text-muted-foreground">
+                    ₹{(budget[0] / 100000).toLocaleString()}L - ₹
+                    {(budget[1] / 100000).toLocaleString()}L
+                  </span>
+
+                  {/* Two-thumb range slider */}
+                  <Slider
+                    min={50000}
+                    max={5000000}
+                    step={50000}
+                    value={budget}
+                    onValueChange={setBudget}
+                    className="w-full"
+                  />
+
+                  {/* Inputs for min/max */}
+                  <div className="flex space-x-4 mt-2">
+                    <input
+                      type="number"
+                      value={budget[0] / 100000}
+                      onChange={(e) =>
+                        setBudget([
+                          Math.min(Number(e.target.value) * 100000, budget[1]),
+                          budget[1],
+                        ])
+                      }
+                      placeholder="Min Budget (Lakh)"
+                      className="w-full border border-gray-300 rounded px-2 py-1"
+                    />
+                    <input
+                      type="number"
+                      value={budget[1] / 100000}
+                      onChange={(e) =>
+                        setBudget([
+                          budget[0],
+                          Math.max(Number(e.target.value) * 100000, budget[0]),
+                        ])
+                      }
+                      placeholder="Max Budget (Lakh)"
+                      className="w-full border border-gray-300 rounded px-2 py-1"
+                    />
+                  </div>
                 </div>
+
                 {/* Fuel Type */}
                 <div className="flex flex-col space-y-1">
                   <Label className="font-medium">Fuel Type</Label>
                   <Select value={fuelType} onValueChange={setFuelType}>
-                    <SelectTrigger><SelectValue placeholder="Select fuel" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select fuel" />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Any</SelectItem>
                       <SelectItem value="petrol">Petrol</SelectItem>
@@ -129,7 +196,9 @@ const Recommendations = () => {
                 <div className="flex flex-col space-y-1">
                   <Label className="font-medium">Transmission</Label>
                   <Select value={transmission} onValueChange={setTransmission}>
-                    <SelectTrigger><SelectValue placeholder="Select transmission" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select transmission" />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Any</SelectItem>
                       <SelectItem value="manual">Manual</SelectItem>
@@ -141,7 +210,9 @@ const Recommendations = () => {
                 <div className="flex flex-col space-y-1">
                   <Label className="font-medium">Seating Capacity</Label>
                   <Select value={seating} onValueChange={setSeating}>
-                    <SelectTrigger><SelectValue placeholder="Select seating" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select seating" />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Any</SelectItem>
                       <SelectItem value="2">2</SelectItem>
@@ -155,7 +226,9 @@ const Recommendations = () => {
                 {/* Max Service Cost */}
                 <div className="flex flex-col space-y-1">
                   <Label className="font-medium">Max Service Cost</Label>
-                  <span className="text-sm text-muted-foreground">₹{maxServiceCost.toLocaleString()}</span>
+                  <span className="text-sm text-muted-foreground">
+                    ₹{maxServiceCost.toLocaleString()}
+                  </span>
                   <Slider
                     min={0}
                     max={50000}
@@ -167,7 +240,10 @@ const Recommendations = () => {
                 </div>
               </div>
               <div className="flex justify-end mt-4">
-                <Button onClick={applyFilters} className="flex items-center space-x-2">
+                <Button
+                  onClick={applyFilters}
+                  className="flex items-center space-x-2"
+                >
                   <Search className="h-4 w-4" />
                   <span>Get Recommendations</span>
                 </Button>
@@ -178,7 +254,9 @@ const Recommendations = () => {
           {/* Results */}
           <div className="mb-4">
             <h2 className="text-2xl font-semibold text-foreground">
-              {isLoading ? "Loading recommendations..." : `${filteredVehicles.length} recommendation(s) found`}
+              {isLoading
+                ? "Loading recommendations..."
+                : `${filteredVehicles.length} recommendation(s) found`}
             </h2>
           </div>
 
@@ -193,8 +271,12 @@ const Recommendations = () => {
             <Card className="text-center py-12">
               <CardContent>
                 <Car className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">No vehicles found</h3>
-                <p className="text-muted-foreground">Try adjusting your requirements to see results</p>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  No vehicles found
+                </h3>
+                <p className="text-muted-foreground">
+                  Try adjusting your requirements to see results
+                </p>
               </CardContent>
             </Card>
           ) : (
@@ -206,7 +288,9 @@ const Recommendations = () => {
                 >
                   <div
                     className="flex justify-between items-center cursor-pointer px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-t-lg"
-                    onClick={() => setExpandedBrand(expandedBrand === brand ? null : brand)}
+                    onClick={() =>
+                      setExpandedBrand(expandedBrand === brand ? null : brand)
+                    }
                   >
                     <div className="flex items-center space-x-3">
                       {/* Brand Logo manually mapped */}
@@ -215,7 +299,9 @@ const Recommendations = () => {
                         alt={brand}
                         className="w-8 h-8 object-contain rounded-md border border-gray-300"
                       />
-                      <span className="font-semibold text-lg">{brand} ({vehicles.length})</span>
+                      <span className="font-semibold text-lg">
+                        {brand} ({vehicles.length})
+                      </span>
                     </div>
 
                     <motion.div
@@ -235,8 +321,11 @@ const Recommendations = () => {
                         transition={{ duration: 0.3 }}
                         className="px-4 py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
                       >
-                        {vehicles.map(v => (
-                          <Card key={v.Car_ID} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                        {vehicles.map((v) => (
+                          <Card
+                            key={v.Car_ID}
+                            className="overflow-hidden hover:shadow-xl transition-all duration-300"
+                          >
                             <div className="relative w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex flex-col items-center justify-center text-center rounded-lg shadow-sm">
                               {v.image ? (
                                 <img
@@ -246,19 +335,42 @@ const Recommendations = () => {
                                 />
                               ) : (
                                 <div className="flex flex-col items-center justify-center h-full w-full px-2">
-                                  <span className="text-2xl font-bold text-gray-700">{v.Brand}</span>
-                                  <span className="text-md text-gray-600 mt-1">{v.Model}</span>
+                                  <span className="text-2xl font-bold text-gray-700">
+                                    {v.Brand}
+                                  </span>
+                                  <span className="text-md text-gray-600 mt-1">
+                                    {v.Model}
+                                  </span>
                                 </div>
                               )}
-                              <Badge className="absolute top-2 right-2 bg-primary">{v.Fuel_Type}</Badge>
+                              <Badge className="absolute top-2 right-2 bg-primary">
+                                {v.Fuel_Type}
+                              </Badge>
                             </div>
                             <CardContent className="p-4 text-sm space-y-2">
-                              <h3 className="font-semibold">{v.Brand} {v.Model}</h3>
-                              <div className="flex justify-between"><span>Price:</span> <span>₹{v.Price.toLocaleString()}</span></div>
-                              <div className="flex justify-between"><span>Mileage:</span> <span>{v.Mileage} km/l</span></div>
-                              <div className="flex justify-between"><span>Transmission:</span> <span>{v.Transmission}</span></div>
-                              <div className="flex justify-between"><span>Seating:</span> <span>{v.Seating_Capacity}</span></div>
-                              <div className="flex justify-between"><span>Service Cost:</span> <span>₹{v.Service_Cost.toLocaleString()}</span></div>
+                              <h3 className="font-semibold">
+                                {v.Brand} {v.Model}
+                              </h3>
+                              <div className="flex justify-between">
+                                <span>Price:</span>{" "}
+                                <span>₹{v.Price.toLocaleString()}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Mileage:</span>{" "}
+                                <span>{v.Mileage} km/l</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Transmission:</span>{" "}
+                                <span>{v.Transmission}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Seating:</span>{" "}
+                                <span>{v.Seating_Capacity}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Service Cost:</span>{" "}
+                                <span>₹{v.Service_Cost.toLocaleString()}</span>
+                              </div>
                             </CardContent>
                           </Card>
                         ))}
@@ -269,7 +381,6 @@ const Recommendations = () => {
               ))}
             </div>
           )}
-
         </motion.div>
       </div>
     </div>
