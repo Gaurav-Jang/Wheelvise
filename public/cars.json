@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "name": "Maruti Suzuki Swift",
+    "type": "Hatchback",
+    "price": 800000,
+    "maintenance": "Low",
+    "features": ["Fuel Efficient", "Compact", "Affordable"],
+    "image": "https://images.unsplash.com/photo-1583259304870-2d3a2d3c96b4?w=400",
+    "mileage": "23 km/l",
+    "rating": 4.3
+  },
+  {
+    "id": 2,
+    "name": "Hyundai Creta",
+    "type": "SUV",
+    "price": 1500000,
+    "maintenance": "Medium",
+    "features": ["Spacious", "Family Car", "Comfortable Ride"],
+    "image": "https://images.unsplash.com/photo-1618504384572-0cf0be2d0ec3?w=400",
+    "mileage": "16 km/l",
+    "rating": 4.5
+  },
+  {
+    "id": 3,
+    "name": "Tata Nexon EV",
+    "type": "Electric",
+    "price": 1400000,
+    "maintenance": "Low",
+    "features": ["Electric", "Safety Features", "Modern Design"],
+    "image": "https://images.unsplash.com/photo-1609093814504-4d1dbd2c5d18?w=400",
+    "mileage": "312 km/charge",
+    "rating": 4.6
+  },
+  {
+    "id": 4,
+    "name": "Royal Enfield Classic 350",
+    "type": "Bike",
+    "price": 190000,
+    "maintenance": "Medium",
+    "features": ["Classic Design", "Comfortable Ride", "Long Lasting"],
+    "image": "https://images.unsplash.com/photo-1598171820782-3c683a61d0c3?w=400",
+    "mileage": "35 km/l",
+    "rating": 4.7
+  },
+  {
+    "id": 5,
+    "name": "KTM Duke 200",
+    "type": "Bike",
+    "price": 220000,
+    "maintenance": "Medium",
+    "features": ["Sporty", "Lightweight", "Performance"],
+    "image": "https://images.unsplash.com/photo-1610850515136-0a7d4d2e8f2e?w=400",
+    "mileage": "30 km/l",
+    "rating": 4.4
+  },
+  {
+    "id": 6,
+    "name": "Mahindra Thar",
+    "type": "SUV",
+    "price": 1400000,
+    "maintenance": "High",
+    "features": ["Off-road", "Adventure", "Rugged Design"],
+    "image": "https://images.unsplash.com/photo-1615866390707-91f0b5b8c917?w=400",
+    "mileage": "15 km/l",
+    "rating": 4.6
+  },
+  {
+    "id": 7,
+    "name": "Honda City",
+    "type": "Sedan",
+    "price": 1200000,
+    "maintenance": "Low",
+    "features": ["Comfortable", "Reliable", "Fuel Efficient"],
+    "image": "https://images.unsplash.com/photo-1614680370962-2db0bfa5f7a4?w=400",
+    "mileage": "18 km/l",
+    "rating": 4.5
+  },
+  {
+    "id": 8,
+    "name": "Bajaj Pulsar 150",
+    "type": "Bike",
+    "price": 120000,
+    "maintenance": "Low",
+    "features": ["Fuel Efficient", "Reliable", "Affordable"],
+    "image": "https://images.unsplash.com/photo-1616105920050-85f6269481f0?w=400",
+    "mileage": "45 km/l",
+    "rating": 4.3
+  },
+  {
+    "id": 9,
+    "name": "Maruti Suzuki Baleno",
+    "type": "Hatchback",
+    "price": 900000,
+    "maintenance": "Low",
+    "features": ["Spacious", "Fuel Efficient", "Comfortable"],
+    "image": "https://images.unsplash.com/photo-1616629398262-198aaf76e9fc?w=400",
+    "mileage": "22 km/l",
+    "rating": 4.4
+  },
+  {
+    "id": 10,
+    "name": "Tata Harrier",
+    "type": "SUV",
+    "price": 1800000,
+    "maintenance": "Medium",
+    "features": ["Luxury", "Spacious", "Safety Features"],
+    "image": "https://images.unsplash.com/photo-1616201877220-b3d4ee1eb66f?w=400",
+    "mileage": "16 km/l",
+    "rating": 4.6
+  }
+]
