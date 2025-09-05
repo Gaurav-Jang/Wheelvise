@@ -89,7 +89,7 @@ const BlogPost = () => {
               <p className="text-xl text-muted-foreground mb-6">
                 {blog.description}
               </p>
-              
+
               {/* Meta Information */}
               <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground border-b border-border pb-6">
                 <div className="flex items-center">
@@ -111,11 +111,14 @@ const BlogPost = () => {
               </div>
             </div>
 
-            {/* Article Content */}
             <div className="prose prose-lg max-w-none">
               <div
                 className="text-foreground leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: blog.content }}
+                dangerouslySetInnerHTML={{
+                  __html: blog.content.includes("<")
+                    ? blog.content
+                    : blog.content.replace(/\n/g, "<br />"),
+                }}
               />
             </div>
 
@@ -126,12 +129,11 @@ const BlogPost = () => {
                   Ready to Find Your Perfect Vehicle?
                 </h3>
                 <p className="text-muted-foreground mb-6">
-                  Use our recommendation engine to discover vehicles that match your needs and budget.
+                  Use our recommendation engine to discover vehicles that match
+                  your needs and budget.
                 </p>
                 <Button size="lg" asChild>
-                  <Link to="/recommendations">
-                    Get Recommendations
-                  </Link>
+                  <Link to="/recommendations">Get Recommendations</Link>
                 </Button>
               </div>
             </div>
